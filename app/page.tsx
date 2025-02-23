@@ -14,6 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import * as THREE from "three";
+import Head from "next/head";
 
 function Background({ mousePosition, isTransitioning }: { mousePosition: { x: number; y: number }, isTransitioning: boolean }) {
   const torusRef = useRef<THREE.Mesh>(null);
@@ -40,48 +41,47 @@ function Background({ mousePosition, isTransitioning }: { mousePosition: { x: nu
   }, [mousePosition, isTransitioning]);
 
   return (
-    <group ref={groupRef}>
-      <Stars
-        ref={starsRef}
-        radius={300}
-        depth={60}
-        count={5000}
-        factor={6}
-        saturation={0.5}
-        fade
-        speed={isTransitioning ? 0.25 : 0.5}
-      />
-      <Float speed={2} rotationIntensity={isTransitioning ? 0.25 : 0.5} floatIntensity={1}>
-        <mesh ref={torusRef} position={[0, 0, -60]}>
-          <torusGeometry args={[15, 3, 32, 100]} />
-          <meshStandardMaterial
-            color="#2D3A8C"
-            wireframe
-            emissive="#4F46E5"
-            emissiveIntensity={isTransitioning ? 0.2 : 0.4}
-            transparent
-            opacity={0.7}
-          />
-        </mesh>
-      </Float>
-      <Float speed={1.5} rotationIntensity={isTransitioning ? 0.15 : 0.3} floatIntensity={0.8}>
-        <mesh ref={torus2Ref} position={[0, 0, -80]}>
-          <torusGeometry args={[20, 1, 16, 100]} />
-          <meshStandardMaterial
-            color="#5B21B6"
-            wireframe
-            emissive="#7C3AED"
-            emissiveIntensity={isTransitioning ? 0.15 : 0.3}
-            transparent
-            opacity={0.5}
-          />
-        </mesh>
-      </Float>
-      <ambientLight intensity={0.2} />
-      <pointLight position={[10, 10, 10]} intensity={0.7} color="#4F46E5" />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#7C3AED" />
-      <pointLight position={[0, 0, 20]} intensity={0.3} color="#C4B5FD" />
-    </group>
+    <><Head>
+      <link rel="shortcut icon" href="https://devdeploy.us/favicon.ico" type="image/x-icon" />
+    </Head><group ref={groupRef}>
+        <Stars
+          ref={starsRef}
+          radius={300}
+          depth={60}
+          count={5000}
+          factor={6}
+          saturation={0.5}
+          fade
+          speed={isTransitioning ? 0.25 : 0.5} />
+        <Float speed={2} rotationIntensity={isTransitioning ? 0.25 : 0.5} floatIntensity={1}>
+          <mesh ref={torusRef} position={[0, 0, -60]}>
+            <torusGeometry args={[15, 3, 32, 100]} />
+            <meshStandardMaterial
+              color="#2D3A8C"
+              wireframe
+              emissive="#4F46E5"
+              emissiveIntensity={isTransitioning ? 0.2 : 0.4}
+              transparent
+              opacity={0.7} />
+          </mesh>
+        </Float>
+        <Float speed={1.5} rotationIntensity={isTransitioning ? 0.15 : 0.3} floatIntensity={0.8}>
+          <mesh ref={torus2Ref} position={[0, 0, -80]}>
+            <torusGeometry args={[20, 1, 16, 100]} />
+            <meshStandardMaterial
+              color="#5B21B6"
+              wireframe
+              emissive="#7C3AED"
+              emissiveIntensity={isTransitioning ? 0.15 : 0.3}
+              transparent
+              opacity={0.5} />
+          </mesh>
+        </Float>
+        <ambientLight intensity={0.2} />
+        <pointLight position={[10, 10, 10]} intensity={0.7} color="#4F46E5" />
+        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#7C3AED" />
+        <pointLight position={[0, 0, 20]} intensity={0.3} color="#C4B5FD" />
+      </group></>
   );
 }
 
@@ -106,14 +106,14 @@ export default function Home() {
 
   const handleSectionChange = (newSection: number) => {
     if (newSection < 0 || newSection >= sections.length) return;
-    
+
     setCurrentSection(newSection);
     setIsTransitioning(true);
-    
+
     if (transitionTimeoutRef.current) {
       clearTimeout(transitionTimeoutRef.current);
     }
-    
+
     transitionTimeoutRef.current = setTimeout(() => {
       setIsTransitioning(false);
     }, 500);
@@ -125,14 +125,14 @@ export default function Home() {
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-      
+
       const now = Date.now();
       if (now - lastWheelTime < wheelCooldown) return;
       lastWheelTime = now;
 
       const direction = e.deltaY > 0 ? 1 : -1;
       const newSection = currentSection + direction;
-      
+
       if (newSection >= 0 && newSection < sections.length) {
         handleSectionChange(newSection);
       }
@@ -163,7 +163,7 @@ export default function Home() {
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("keydown", handleKeyDown);
-    
+
     return () => {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("keydown", handleKeyDown);
@@ -203,7 +203,7 @@ export default function Home() {
 
   const renderSection = (index: number) => {
     const sectionClasses = "relative z-30 h-screen flex items-center justify-center px-4 before:content-[''] before:absolute before:inset-0 before:bg-black/40 before:backdrop-blur-sm";
-    
+
     switch (index) {
       case 0:
         return (
@@ -253,7 +253,7 @@ export default function Home() {
                 </p>
                 <div className="flex justify-center gap-4">
                   <div className="inline-flex gap-2 px-6 py-3 bg-gradient-to-r from-indigo-950/50 to-purple-950/50 rounded-full text-white font-bold backdrop-blur-md border border-indigo-500/20">
-                    <span className="text-indigo-400 animate-pulse">●</span> LIVE: 258,492 Players Online
+                    <span className="text-indigo-400 animate-pulse">●</span> LIVE: OFFLINE
                   </div>
                 </div>
               </motion.div>
@@ -304,33 +304,13 @@ export default function Home() {
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
                 <GameCard
-                  title="Cyber Assault"
-                  description="Fast-paced cyberpunk shooter with advanced weapon systems"
-                  image="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop"
+                  title="Mount Everest Roleplay"
+                  description="Conquer the highest mountain on Earth! With a peak elevation of 29,035 feet (8849 meters), the top of Mount Everest is the highest point above sea level."
+                  image="https://tr.rbxcdn.com/180DAY-d06d809b1d50e003917990f3a7f1ad00/768/432/Image/Webp/noFilter"
                   stats={{
-                    players: "2M+",
-                    rating: "4.9",
-                    visits: "8M+",
-                  }}
-                />
-                <GameCard
-                  title="Neon Racers"
-                  description="Futuristic racing in procedurally generated tracks"
-                  image="https://images.unsplash.com/photo-1551368998-d349c755c74c?w=800&auto=format&fit=crop"
-                  stats={{
-                    players: "1.5M+",
-                    rating: "4.8",
-                    visits: "6M+",
-                  }}
-                />
-                <GameCard
-                  title="Quantum Quest"
-                  description="Mind-bending puzzle adventure in quantum realms"
-                  image="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&auto=format&fit=crop"
-                  stats={{
-                    players: "1M+",
-                    rating: "4.7",
-                    visits: "4M+",
+                    players: "OFFLINE",
+                    rating: "4.5",
+                    visits: "3.9M+",
                   }}
                 />
               </motion.div>
@@ -372,24 +352,9 @@ export default function Home() {
               >
                 {[
                   {
-                    name: "Alex Chen",
-                    role: "Game Director",
-                    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&auto=format&fit=crop",
-                  },
-                  {
-                    name: "Sarah Johnson",
-                    role: "Lead Developer",
-                    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&auto=format&fit=crop",
-                  },
-                  {
-                    name: "Marcus Rodriguez",
-                    role: "Art Director",
-                    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop",
-                  },
-                  {
-                    name: "Emily Zhang",
-                    role: "UX Designer",
-                    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop",
+                    name: "JKbings0099",
+                    role: "Founder | Lead Developer",
+                    image: "https://tr.rbxcdn.com/30DAY-AvatarHeadshot-DAC9E1ACCC62EA6FAB8C8D4F37A64D43-Png/840/840/AvatarHeadshot/Webp/noFilter",
                   },
                 ].map((member, index) => (
                   <motion.div
@@ -475,11 +440,10 @@ export default function Home() {
               <TooltipTrigger asChild>
                 <motion.div
                   whileHover={{ scale: 1.2 }}
-                  className={`w-2 h-2 rounded-full transition-all duration-500 cursor-pointer ${
-                    currentSection === index
+                  className={`w-2 h-2 rounded-full transition-all duration-500 cursor-pointer ${currentSection === index
                       ? "bg-indigo-500 w-6"
                       : "bg-indigo-500/20 hover:bg-indigo-500/40"
-                  }`}
+                    }`}
                   onClick={() => {
                     if (!isTransitioning) {
                       handleSectionChange(index);
@@ -487,8 +451,8 @@ export default function Home() {
                   }}
                 />
               </TooltipTrigger>
-              <TooltipContent 
-                side="left" 
+              <TooltipContent
+                side="left"
                 className="bg-black/80 border-indigo-500/20"
                 sideOffset={8}
               >
