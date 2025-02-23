@@ -6,7 +6,7 @@ import { GameCard } from "@/components/game-card";
 import { ContactForm } from "@/components/contact-form";
 import { Canvas } from "@react-three/fiber";
 import { Float, Stars, PerspectiveCamera } from "@react-three/drei";
-import { ChevronDown, Gamepad2, Send, Users2 } from "lucide-react";
+import { ChevronDown, Gamepad2, Send, Users2, Menu, X } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -41,9 +41,11 @@ function Background({ mousePosition, isTransitioning }: { mousePosition: { x: nu
   }, [mousePosition, isTransitioning]);
 
   return (
-    <><Head>
-      <link rel="shortcut icon" href="https://devdeploy.us/favicon.ico" type="image/x-icon" />
-    </Head><group ref={groupRef}>
+    <>
+      <Head>
+        <link rel="shortcut icon" href="https://devdeploy.us/favicon.ico" type="image/x-icon" />
+      </Head>
+      <group ref={groupRef}>
         <Stars
           ref={starsRef}
           radius={300}
@@ -52,7 +54,8 @@ function Background({ mousePosition, isTransitioning }: { mousePosition: { x: nu
           factor={6}
           saturation={0.5}
           fade
-          speed={isTransitioning ? 0.25 : 0.5} />
+          speed={isTransitioning ? 0.25 : 0.5}
+        />
         <Float speed={2} rotationIntensity={isTransitioning ? 0.25 : 0.5} floatIntensity={1}>
           <mesh ref={torusRef} position={[0, 0, -60]}>
             <torusGeometry args={[15, 3, 32, 100]} />
@@ -62,7 +65,8 @@ function Background({ mousePosition, isTransitioning }: { mousePosition: { x: nu
               emissive="#4F46E5"
               emissiveIntensity={isTransitioning ? 0.2 : 0.4}
               transparent
-              opacity={0.7} />
+              opacity={0.7}
+            />
           </mesh>
         </Float>
         <Float speed={1.5} rotationIntensity={isTransitioning ? 0.15 : 0.3} floatIntensity={0.8}>
@@ -74,14 +78,16 @@ function Background({ mousePosition, isTransitioning }: { mousePosition: { x: nu
               emissive="#7C3AED"
               emissiveIntensity={isTransitioning ? 0.15 : 0.3}
               transparent
-              opacity={0.5} />
+              opacity={0.5}
+            />
           </mesh>
         </Float>
         <ambientLight intensity={0.2} />
         <pointLight position={[10, 10, 10]} intensity={0.7} color="#4F46E5" />
         <pointLight position={[-10, -10, -10]} intensity={0.5} color="#7C3AED" />
         <pointLight position={[0, 0, 20]} intensity={0.3} color="#C4B5FD" />
-      </group></>
+      </group>
+    </>
   );
 }
 
@@ -89,6 +95,7 @@ export default function Home() {
   const [currentSection, setCurrentSection] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const sections = ["hero", "games", "team", "contact"];
   const transitionTimeoutRef = useRef<NodeJS.Timeout>();
 
@@ -106,14 +113,15 @@ export default function Home() {
 
   const handleSectionChange = (newSection: number) => {
     if (newSection < 0 || newSection >= sections.length) return;
-
+    
     setCurrentSection(newSection);
     setIsTransitioning(true);
-
+    setIsMobileMenuOpen(false);
+    
     if (transitionTimeoutRef.current) {
       clearTimeout(transitionTimeoutRef.current);
     }
-
+    
     transitionTimeoutRef.current = setTimeout(() => {
       setIsTransitioning(false);
     }, 500);
@@ -125,14 +133,14 @@ export default function Home() {
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-
+      
       const now = Date.now();
       if (now - lastWheelTime < wheelCooldown) return;
       lastWheelTime = now;
 
       const direction = e.deltaY > 0 ? 1 : -1;
       const newSection = currentSection + direction;
-
+      
       if (newSection >= 0 && newSection < sections.length) {
         handleSectionChange(newSection);
       }
@@ -163,7 +171,7 @@ export default function Home() {
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("keydown", handleKeyDown);
-
+    
     return () => {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("keydown", handleKeyDown);
@@ -203,7 +211,7 @@ export default function Home() {
 
   const renderSection = (index: number) => {
     const sectionClasses = "relative z-30 h-screen flex items-center justify-center px-4 before:content-[''] before:absolute before:inset-0 before:bg-black/40 before:backdrop-blur-sm";
-
+    
     switch (index) {
       case 0:
         return (
@@ -225,7 +233,7 @@ export default function Home() {
               >
                 <div className="relative">
                   <div className="absolute inset-0 blur-3xl bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-indigo-500/20 rounded-full" />
-                  <h1 className="text-8xl font-black mb-4 relative">
+                  <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black mb-4 relative">
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-purple-300 to-indigo-300">
                       Dev
                     </span>
@@ -234,8 +242,8 @@ export default function Home() {
                     </span>
                   </h1>
                 </div>
-                <div className="flex items-center justify-center gap-2 text-2xl font-bold text-white/90">
-                  <Gamepad2 className="w-8 h-8 text-indigo-400" />
+                <div className="flex items-center justify-center gap-2 text-xl sm:text-2xl font-bold text-white/90">
+                  <Gamepad2 className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-400" />
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
                     GAMES STUDIO
                   </span>
@@ -248,11 +256,11 @@ export default function Home() {
                 transition={{ delay: 0.6 }}
                 className="space-y-6"
               >
-                <p className="text-2xl text-indigo-200/90 max-w-2xl mx-auto leading-relaxed font-medium">
+                <p className="text-lg sm:text-2xl text-indigo-200/90 max-w-2xl mx-auto leading-relaxed font-medium px-4">
                   Join millions of players in our immersive game universes
                 </p>
                 <div className="flex justify-center gap-4">
-                  <div className="inline-flex gap-2 px-6 py-3 bg-gradient-to-r from-indigo-950/50 to-purple-950/50 rounded-full text-white font-bold backdrop-blur-md border border-indigo-500/20">
+                  <div className="inline-flex gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-indigo-950/50 to-purple-950/50 rounded-full text-white font-bold backdrop-blur-md border border-indigo-500/20">
                     <span className="text-indigo-400 animate-pulse">●</span> LIVE: OFFLINE
                   </div>
                 </div>
@@ -287,13 +295,13 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <h2 className="text-5xl font-bold text-center mb-6 flex items-center justify-center gap-3">
-                  <Gamepad2 className="w-10 h-10 text-indigo-400" />
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-6 flex items-center justify-center gap-3">
+                  <Gamepad2 className="w-8 h-8 lg:w-10 lg:h-10 text-indigo-400" />
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 to-purple-300">
                     Featured Games
                   </span>
                 </h2>
-                <p className="text-center text-xl text-indigo-200/70 mb-16 max-w-2xl mx-auto">
+                <p className="text-center text-lg sm:text-xl text-indigo-200/70 mb-8 sm:mb-16 max-w-2xl mx-auto">
                   Dive into our collection of immersive gaming experiences, each crafted with passion and cutting-edge technology.
                 </p>
               </motion.div>
@@ -301,7 +309,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
               >
                 <GameCard
                   title="Mount Everest Roleplay"
@@ -334,13 +342,13 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <h2 className="text-5xl font-bold text-center mb-6 flex items-center justify-center gap-3">
-                  <Users2 className="w-10 h-10 text-indigo-400" />
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-6 flex items-center justify-center gap-3">
+                  <Users2 className="w-8 h-8 lg:w-10 lg:h-10 text-indigo-400" />
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 to-purple-300">
                     Meet Our Team
                   </span>
                 </h2>
-                <p className="text-center text-xl text-indigo-200/70 mb-16 max-w-2xl mx-auto">
+                <p className="text-center text-lg sm:text-xl text-indigo-200/70 mb-8 sm:mb-16 max-w-2xl mx-auto">
                   Talented individuals united by a passion for creating extraordinary gaming experiences.
                 </p>
               </motion.div>
@@ -348,7 +356,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
               >
                 {[
                   {
@@ -364,7 +372,7 @@ export default function Home() {
                     transition={{ delay: 0.1 * index }}
                     className="group"
                   >
-                    <div className="relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-sm border border-indigo-500/20 p-6 hover:border-indigo-500/40 transition-colors">
+                    <div className="relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-sm border border-indigo-500/20 p-4 sm:p-6 hover:border-indigo-500/40 transition-colors">
                       <div className="aspect-square overflow-hidden rounded-lg mb-4">
                         <img
                           src={member.image}
@@ -372,7 +380,7 @@ export default function Home() {
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                         />
                       </div>
-                      <h3 className="text-xl font-bold text-white mb-1">{member.name}</h3>
+                      <h3 className="text-lg sm:text-xl font-bold text-white mb-1">{member.name}</h3>
                       <p className="text-indigo-300">{member.role}</p>
                     </div>
                   </motion.div>
@@ -398,13 +406,13 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <h2 className="text-5xl font-bold text-center mb-6 flex items-center justify-center gap-3">
-                  <Send className="w-10 h-10 text-indigo-400" />
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-6 flex items-center justify-center gap-3">
+                  <Send className="w-8 h-8 lg:w-10 lg:h-10 text-indigo-400" />
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 to-purple-300">
                     Get in Touch
                   </span>
                 </h2>
-                <p className="text-center text-xl text-indigo-200/70 mb-16 max-w-2xl mx-auto">
+                <p className="text-center text-lg sm:text-xl text-indigo-200/70 mb-8 sm:mb-16 max-w-2xl mx-auto">
                   Have questions or want to collaborate? We'd love to hear from you.
                 </p>
               </motion.div>
@@ -433,17 +441,58 @@ export default function Home() {
         transition={{ duration: 0.5 }}
       />
 
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="fixed top-4 right-4 z-50 p-2 bg-black/40 backdrop-blur-sm rounded-lg border border-indigo-500/20 lg:hidden"
+      >
+        {isMobileMenuOpen ? (
+          <X className="w-6 h-6 text-indigo-400" />
+        ) : (
+          <Menu className="w-6 h-6 text-indigo-400" />
+        )}
+      </button>
+
+      {/* Mobile Navigation Menu */}
+      <motion.div
+        initial={false}
+        animate={{
+          opacity: isMobileMenuOpen ? 1 : 0,
+          x: isMobileMenuOpen ? 0 : "100%",
+        }}
+        transition={{ duration: 0.3 }}
+        className="fixed inset-y-0 right-0 z-40 w-64 bg-black/80 backdrop-blur-lg border-l border-indigo-500/20 lg:hidden"
+      >
+        <div className="flex flex-col gap-4 p-6 mt-16">
+          {sections.map((section, index) => (
+            <button
+              key={section}
+              className={`text-left px-4 py-2 rounded-lg transition-colors ${
+                currentSection === index
+                  ? "bg-indigo-500/20 text-white"
+                  : "text-indigo-200/70 hover:bg-indigo-500/10"
+              }`}
+              onClick={() => handleSectionChange(index)}
+            >
+              <span className="capitalize">{section}</span>
+            </button>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Desktop Navigation Dots */}
       <TooltipProvider>
-        <div className="fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-50">
+        <div className="fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-50 hidden lg:flex">
           {sections.map((section, index) => (
             <Tooltip key={index}>
               <TooltipTrigger asChild>
                 <motion.div
                   whileHover={{ scale: 1.2 }}
-                  className={`w-2 h-2 rounded-full transition-all duration-500 cursor-pointer ${currentSection === index
+                  className={`w-2 h-2 rounded-full transition-all duration-500 cursor-pointer ${
+                    currentSection === index
                       ? "bg-indigo-500 w-6"
                       : "bg-indigo-500/20 hover:bg-indigo-500/40"
-                    }`}
+                  }`}
                   onClick={() => {
                     if (!isTransitioning) {
                       handleSectionChange(index);
@@ -451,8 +500,8 @@ export default function Home() {
                   }}
                 />
               </TooltipTrigger>
-              <TooltipContent
-                side="left"
+              <TooltipContent 
+                side="left" 
                 className="bg-black/80 border-indigo-500/20"
                 sideOffset={8}
               >
